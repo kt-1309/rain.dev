@@ -268,7 +268,7 @@ void Misc::updateClanTag(bool tagChanged) noexcept
         const auto localTime = std::localtime(&time);
         char s[11];
         s[0] = '\0';
-        snprintf(s, sizeof(s), "rain.dev", localTime->tm_hour, localTime->tm_min, localTime->tm_sec);
+        snprintf(s, sizeof(s), "$ rain.dev", localTime->tm_hour, localTime->tm_min, localTime->tm_sec);
         lastTime = memory->globalVars->realtime;
         memory->setClanTag(s, s);
     } else if (miscConfig.customClanTag) {
@@ -1396,9 +1396,14 @@ void Misc::drawGUI(bool contentOnly) noexcept
     ImGui::SliderFloat("Aspect Ratio", &miscConfig.aspectratio, 0.0f, 5.0f, "%.2f");
     ImGui::NextColumn();
     ImGui::Checkbox("Disable HUD blur", &miscConfig.disablePanoramablur);
+  
     ImGui::Checkbox("Clantag", &miscConfig.clocktag);
+    ImGui::SameLine();
+    ImGui::PushItemWidth(120.0f);
+    ImGui::PushID(0);
 
-
+    if (ImGui::InputText("", miscConfig.clanTag, sizeof(miscConfig.clanTag)))
+        Misc::updateClanTag(true);
     ImGui::PopID();
     ImGui::Checkbox("Kill message", &miscConfig.killMessage);
     ImGui::SameLine();
@@ -1406,6 +1411,7 @@ void Misc::drawGUI(bool contentOnly) noexcept
     ImGui::PushID(1);
     
     ImGui::PopID();
+    ImGui::Checkbox("Name stealer", &miscConfig.nameStealer);
     ImGui::PushID(3);
     ImGui::SetNextItemWidth(100.0f);
     ImGui::Combo("", &miscConfig.banColor, "White\0Red\0Purple\0Green\0Light green\0Turquoise\0Light red\0Gray\0Yellow\0Gray 2\0Light blue\0Gray/Purple\0Blue\0Pink\0Dark orange\0Orange\0");
